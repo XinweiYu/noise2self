@@ -51,7 +51,7 @@ def plot_tensors(tensor_list, titles=None):
             ax[i].set_title(titles[i])
         ax[i].get_xaxis().set_ticks([])
         ax[i].get_yaxis().set_ticks([])
-    fig
+    plt.show()
 
 def show_data(datapt):
     # For datasets of the form (noise1, noise2, ground truth), shows all three concatenated
@@ -361,9 +361,12 @@ def getfreegpumem(id):
 def getbestgpu():
     freememlist = []
     for id in range(4):
-        freemem = getfreegpumem(id)
-        print("GPU device %d has %d MiB left." % (id, freemem))
-        freememlist.append(freemem)
+        try:
+            freemem = getfreegpumem(id)
+            print("GPU device %d has %d MiB left." % (id, freemem))
+            freememlist.append(freemem)
+        except:
+            pass
     idbest = freememlist.index(max(freememlist))
     print("--> GPU device %d was chosen" % idbest)
     return idbest

@@ -67,6 +67,7 @@ class ConvBlock(nn.Module):
             x = self.norm2(x)
 
         if self.residual:
+            # only subset of channel add the original image. Is this right?
             x[:, 0:min(ox.shape[1], x.shape[1]), :, :] += ox[:, 0:min(ox.shape[1], x.shape[1]), :, :]
 
         x = self.actfun2(x)

@@ -14,7 +14,7 @@ class BabyUnet(nn.Module):
         self.up1 = lambda x: F.interpolate(x, mode='bilinear', scale_factor=2, align_corners=False)
         self.up2 = lambda x: F.interpolate(x, mode='bilinear', scale_factor=2, align_corners=False)
 
-        self.conv1 = ConvBlock(n_channel_in, width)
+        self.conv1 = ConvBlock(n_channel_in, width) #(in_channel, out_channel), two conv operation(with batch norm, dropout)
         self.conv2 = ConvBlock(width, 2*width)
 
         self.conv3 = ConvBlock(2*width, 2*width)
@@ -25,17 +25,17 @@ class BabyUnet(nn.Module):
         self.conv6 = nn.Conv2d(width, n_channel_out, 1)
 
     def forward(self, x):
-        c1 = self.conv1(x)
+        c1 = self.conv1(x)  # width channels.
         x = self.pool1(c1)
-        c2 = self.conv2(x)
+        c2 = self.conv2(x)  # 2 width channels
         x = self.pool2(c2)
-        self.conv3(x)
+        self.conv3(x)      # 2 width channels.
 
         x = self.up1(x)
-        x = torch.cat([x, c2], 1)
-        x = self.conv4(x)
+        x = torch.cat([x, c2], 1)  # 4 width channels.
+        x = self.conv4(x)         # 2 width channels.
         x = self.up2(x)
-        x = torch.cat([x, c1], 1)
-        x = self.conv5(x)
-        x = self.conv6(x)
+        x = torch.cat([x, c1], 1)  # 3 width channels.
+        x = self.conv5(x)  # 1 width channels.
+        x = self.conv6(x)  # n_channel_out.
         return x
