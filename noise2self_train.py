@@ -105,20 +105,21 @@ if __name__ == "__main__":
             if i == 100:
                 break    
             
-            
-    #%% test the model on test image.          
-    noisy_mnist_test = XrayDataset('data/LowQ_digest_test', mode='test', tsfm=tsfm)            
-    test_data_loader = DataLoader(noisy_mnist_train, batch_size=32, shuffle=False, num_workers=4)     
-    i, test_batch = next(enumerate(test_data_loader))
-    noisy = test_batch['image']
-    model.eval()
-    # calculate the denoise result on test set.
-    simple_output = model(noisy)
-    #model.eval()
-    #invariant_output = masker.infer_full_image(noisy, model)
-    idx = 3
-    plot_tensors([noisy[idx], simple_output[idx]],\
-            ["Noisy Image", "Single Pass Inference"])
+    torch.cuda.empty_cache()     
+    
+#    #%% test the model on test image.          
+#    noisy_mnist_test = XrayDataset('data/LowQ_digest_test', mode='test', tsfm=tsfm)            
+#    test_data_loader = DataLoader(noisy_mnist_train, batch_size=32, shuffle=False, num_workers=4)     
+#    i, test_batch = next(enumerate(test_data_loader))
+#    noisy = test_batch['image']
+#    model.eval()
+#    # calculate the denoise result on test set.
+#    simple_output = model(noisy)
+#    #model.eval()
+#    #invariant_output = masker.infer_full_image(noisy, model)
+#    idx = 8
+#    plot_tensors([noisy[idx], simple_output[idx]],\
+#            ["Noisy Image", "Single Pass Inference"])
     
     
     
