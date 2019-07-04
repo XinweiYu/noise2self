@@ -105,7 +105,7 @@ def preprocess_dcm_images(data_paths, out_dir, split=False, **kwargs):
 if __name__ == "__main__":
     # preprocess the image folder.
     #data_path = '/home/yxw/Desktop/transfer/data_customer/20190626/to周老师/低信噪比腰椎'
-    data_path = ['/home/yxw/Desktop/transfer/data_customer/20190626/to周老师/低信噪比消化道']
+    data_path = ['/data_ssd/data/data_customer/20190626/to周老师/低信噪比消化道']
     # Output folder.
     out_dir = 'LowQ_digest'
     #

@@ -4,6 +4,7 @@ import torch.nn.functional as F
 from numpy import clip, exp
 from scipy.signal import convolve2d
 import matplotlib.pyplot as plt
+import os
 
 def expand(x, r):
     return np.repeat(np.repeat(x, r, axis = 0), r, axis = 1)
@@ -36,11 +37,12 @@ def tensor_to_numpy(x):
         raise
 
 
-def plot_tensors(tensor_list, titles=None):
-    color = True if tensor_list[0].shape[1] == 3 else False
+def plot_tensors(tensor_list, titles=None, plot=True, save=False, **kwargs):
+    #color = True if tensor_list[0].shape[1] == 3 else False
     image_list = [tensor_to_numpy(tensor) for tensor in tensor_list]
     width = len(image_list)
     fig, ax = plt.subplots(1, width, sharex='col', sharey='row', figsize=(width * 4, 4))
+
 
     for i in range(width):
         if image_list[i].ndim == 2:
@@ -51,7 +53,16 @@ def plot_tensors(tensor_list, titles=None):
             ax[i].set_title(titles[i])
         ax[i].get_xaxis().set_ticks([])
         ax[i].get_yaxis().set_ticks([])
-    plt.show()
+        
+    # save the image if indicated
+    if save:
+        img_dir = kwargs['img_dir']
+        if not os.path.exists(img_dir):
+            os.makedirs(img_dir) 
+        img_name = kwargs['img_name']
+        plt.savefig(os.path.join(img_dir, img_name))
+    if plot:
+        plt.show()
 
 def show_data(datapt):
     # For datasets of the form (noise1, noise2, ground truth), shows all three concatenated
