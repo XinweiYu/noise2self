@@ -7,7 +7,8 @@ import numpy as np
 from PIL import Image
 from torch.nn import MSELoss
 import os
-
+from util import plot_tensors
+import time
 
 def jpg_to_tensor(filepath):
     pil = Image.open(filepath)
@@ -315,6 +316,7 @@ if __name__ == "__main__":
     
     
     save_img_ind = 0  # initialize the image index
+    tic = time.time()
     for step in range(num_steps):
         output = net(noise)
         #masked_output = output * mask
@@ -325,7 +327,9 @@ if __name__ == "__main__":
         optimizer.step()
         print('At step {}, loss is {}'.format(step, loss.data.cpu()))
         if step % save_frequency == 0:
-            tensor_to_jpg(output.data, os.path.join(output_dir,'train_{}.png'.format(save_img_ind)))
+            #tensor_to_jpg(output.data, os.path.join(output_dir,'train_{}.png'.format(save_img_ind)))
+            plot_tensors([noisy_img, output.data],["Noisy Image", "Single Pass Inference"], plot=False,\
+                         save=True, img_dir=output_dir, img_name='train_{}.png'.format(save_img_ind))
             save_img_ind += 1
         
         # induce noise in the input 
@@ -335,3 +339,5 @@ if __name__ == "__main__":
             noise.data += sigma * torch.randn(noise.shape)
     
     torch.cuda.empty_cache()
+    toc = time.time()
+    print('Run Time:{}s'.format(toc-tic))

@@ -41,7 +41,7 @@ def plot_tensors(tensor_list, titles=None, plot=True, save=False, **kwargs):
     #color = True if tensor_list[0].shape[1] == 3 else False
     image_list = [tensor_to_numpy(tensor) for tensor in tensor_list]
     width = len(image_list)
-    fig, ax = plt.subplots(1, width, sharex='col', sharey='row', figsize=(width * 4, 4))
+    fig, ax = plt.subplots(1, width, sharex='col', sharey='row', figsize=(width * 15, 15))
 
 
     for i in range(width):

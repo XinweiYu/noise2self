@@ -21,6 +21,8 @@ from models.babyunet import BabyUnet
 from torch.nn import MSELoss
 from torch.optim import Adam
 from PIL import Image, ImageOps
+from util_data import tensor_to_image
+import time
 
 
 class XrayDataset(Dataset):
@@ -119,7 +121,7 @@ if __name__ == "__main__":
     count_batch = 0
     
     # train the network
-    num_epoch = 501
+    num_epoch = 51
     
                 
     # load a single image for test
@@ -136,7 +138,7 @@ if __name__ == "__main__":
         noisy_in_sample = noisy_in_sample.cuda()
         noisy_out_sample = noisy_out_sample.cuda()
    
- 
+    tic = time.time()
     for epoch_idx in range(num_epoch):
         for i, batch in enumerate(data_loader):
             model.train()
@@ -168,13 +170,19 @@ if __name__ == "__main__":
             model.eval()
             # calculate the denoise result on test set.
             simple_output = model(noisy_in_sample)
+            
             plot_tensors([noisy_in_sample[0], simple_output[0]],["Noisy Image", "Single Pass Inference"], plot=False,\
                          save=True, img_dir='babyUnet_denoise_in_sample/', img_name='Epoch_'+str(epoch_idx)) 
             simple_output = model(noisy_out_sample)
             plot_tensors([noisy_out_sample[0], simple_output[0]],["Noisy Image", "Single Pass Inference"], plot=False,\
                          save=True, img_dir='babyUnet_denoise_out_sample/', img_name='Epoch_'+str(epoch_idx))           
+    
+    
     # save the model
-    torch.save(model.state_dict(),  'BabyUnet_denoise.pth')            
+    torch.save(model.state_dict(),  'BabyUnet_denoise.pth')     
+    torch.cuda.empty_cache()   
+    toc = time.time()
+    print('Run Time:{}s'.format(toc-tic))    
     #%% test the model on test image.          
     #noisy_mnist_test = XrayDataset('data/LowQ_digest_test', mode='test', tsfm=tsfm)            
 #    test_data_loader = DataLoader(noisy_mnist_test, batch_size=32, shuffle=False, num_workers=4)     
